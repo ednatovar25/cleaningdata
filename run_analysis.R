@@ -1,3 +1,10 @@
+#run_analysis.R does the following. 
+#Merges the training and the test sets to create one data set.
+#Extracts only the measurements on the mean and standard deviation for each measurement. 
+#Uses descriptive activity names to name the activities in the data set
+#Appropriately labels the data set with descriptive variable names. 
+#From the data set in step 4, creates a second, independent tidy data set with the 
+#average of each variable for each activity and each subject.
 
 library(dplyr)
 library(data.table)
@@ -23,9 +30,10 @@ features <- read.table("features.txt")
 
 #Use features column 2 transposed as features data column headers
 colnames(featuresdata) <-  t(features[2])
-colnames(subjectdata)<-"Subject Data"
-colnames(activitydata)<-"Activity Data"
+colnames(subjectdata)<-"SubjectData"
+colnames(activitydata)<-"ActivityData"
 allMergedData <-cbind(featuresdata,activitydata,subjectdata)
+#allMergedData <-cbind(subjectdata,activitydata,featuresdata)
 
 #View(activitydata)
 #View(subjectdata)
@@ -38,4 +46,15 @@ View(meanAndStdcols)
 requiredData <- allMergedData[,meanAndStdcols]
 View(requiredData)
 
+names(requiredData)<-gsub("^t", "Time", names(requiredData))
+names(requiredData)<-gsub("^f", "Frequency", names(requiredData))
+
+#Use Activity Labels to assign descriptive names to the Activity Data Column
+requiredData$ActivityData <- as.character(requiredData$ActivityData)
+for (i in 1:6){
+  requiredData$ActivityData[requiredData$ActivityData == i] <- as.character(activity_labels[i,2])
+}
+
+
 write.table(requiredData,file="tidy.txt",row.names=FALSE)
+
