@@ -44,7 +44,7 @@ View(allMergedData)
 View(meanAndStdcols)
 
 requiredData <- allMergedData[,meanAndStdcols]
-View(requiredData)
+#View(requiredData)
 
 names(requiredData)<-gsub("^t", "Time", names(requiredData))
 names(requiredData)<-gsub("^f", "Frequency", names(requiredData))
@@ -61,6 +61,9 @@ requireddData <- data.table(requiredData)
 
 write.table(requiredData,file="tidy.txt",row.names=FALSE)
 
+#Extract the mean of the data and order it by subject
 allData <- aggregate(. ~SubjectData + ActivityData, requiredData, mean)
 allData <- allData[order(allData$SubjectData,allData$ActivityData),]
+View(allData)
+#write the data to a file tidy.txt
 write.table(allData, file = "tidy.txt", row.names = FALSE)
