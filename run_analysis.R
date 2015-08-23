@@ -51,10 +51,16 @@ names(requiredData)<-gsub("^f", "Frequency", names(requiredData))
 
 #Use Activity Labels to assign descriptive names to the Activity Data Column
 requiredData$ActivityData <- as.character(requiredData$ActivityData)
+labelslength = length(activity_labels)
 for (i in 1:6){
   requiredData$ActivityData[requiredData$ActivityData == i] <- as.character(activity_labels[i,2])
 }
 
+requiredData$SubjectData <- as.factor(requiredData$SubjectData)
+requireddData <- data.table(requiredData)
 
 write.table(requiredData,file="tidy.txt",row.names=FALSE)
 
+allData <- aggregate(. ~SubjectData + ActivityData, requiredData, mean)
+allData <- allData[order(allData$SubjectData,allData$ActivityData),]
+write.table(allData, file = "tidy.txt", row.names = FALSE)
