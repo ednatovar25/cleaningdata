@@ -23,7 +23,19 @@ features <- read.table("features.txt")
 
 #Use features column 2 transposed as features data column headers
 colnames(featuresdata) <-  t(features[2])
+colnames(subjectdata)<-"Subject Data"
+colnames(activitydata)<-"Activity Data"
+allMergedData <-cbind(featuresdata,activitydata,subjectdata)
 
-View(activitydata)
-View(subjectdata)
-View(featuresdata)
+#View(activitydata)
+#View(subjectdata)
+#View(featuresdata)
+
+meanAndStdcols <- c((grep(".*Mean.*|.*Std.*", names(allMergedData), ignore.case=TRUE)),562,563)
+View(allMergedData)
+View(meanAndStdcols)
+
+requiredData <- allMergedData[,meanAndStdcols]
+View(requiredData)
+
+write.table(requiredData,file="tidy.txt",row.names=FALSE)
